@@ -1,0 +1,42 @@
+<noscript>
+  <iframe src="//www.googletagmanager.com/ns.html?id=GTM-N5NM9B3" height="0" width="0" style="display: none; visibility: hidden;"></iframe>
+</noscript>
+<div class="container-g" id="app">
+  <div class="sc-11unfkk-0 iMrUmY">
+    <nav id="site-upper-nav" class="q0xs59-19 ghzkpM">
+      <div class="sc-11unfkk-3 cHltbi ml-4">
+          <span><a class="" href="<%= root_path %>"><%= image_tag "/smb.png" ,class:"sc-10fmshx-2 dFNvVh"%></a></span>
+      </div>
+      <div class="sc-11unfkk-3 gbfQPZ">
+        <nav class="q0xs59-8 gcmJEQ">
+          <div class="q0xs59-20 jhSsMU beamerTrigger">
+            <a href="/actus" class="q0xs59-6 q0xs59-7 fwuAZd"><div>Actualités</div></a>
+          </div>
+          <div class="q0xs59-20 jhSsMU beamerTrigger">
+            <a href="/publications" class="q0xs59-6 q0xs59-7 fwuAZd"><div>Publications</div></a>
+          </div>
+          <div class="q0xs59-20 jhSsMU beamerTrigger">
+            <a href="/apropos" class="q0xs59-6 q0xs59-7 fwuAZd"><div>À propos</div></a>
+          </div>
+          <div class="q0xs59-20 jhSsMU beamerTrigger">
+            <a href="<%= new_contact_path%>" class="q0xs59-6 q0xs59-7 fwuAZd"><div>Nous contacter</div></a>
+          </div>
+        </nav>
+        <%if current_user%>
+          <div class="q0xs59-20 jhSsMU beamerTrigger">
+            <div class="q0xs59-6 q0xs59-7">
+              <%=link_to 'Se deconnecter', destroy_user_session_path, method: :delete, class: 'fwuAZd'%>
+            </div>
+          </div>
+        <%else%>
+          <div class="q0xs59-20 jhSsMU sans-hover beamerTrigger dropdwn">
+            <span class="q0xs59-6 q0xs59-7 fwuAZd"><div>Connexion</div></span>
+            <div class="droppos">
+              <a href="/users/sign_in"><p class="dropdwn-content border-bottom mb-0 p-3">Se connecter</p></a>
+              <a href="/users/sign_up"><p class="dropdwn-content mb-0 p-3">S'inscrire</p></a>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </nav>
+  
