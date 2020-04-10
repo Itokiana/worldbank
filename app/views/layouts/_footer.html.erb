@@ -1,0 +1,41 @@
+<footer class="bt96d2-0 foCkmu pt-2 pb-3 mt-4">
+  <div class="sc-11unfkk-2 fxFQyp">
+    <div class="bt96d2-1 row align-items-start knxWdP">
+      <div class="bt96d2-2 cNrxHZ cust p-2 col-md-4 bg-white rounded">
+        <div class="wbg-w mx-auto">
+          <a class="bt96d2-3" href="#">
+            <%= image_tag "/wbg.jpg"%>
+          </a>
+        </div>
+        <div class="footer-img">
+          <a class="bt96d2-3 bGIZa" href="#">
+            <%= image_tag "/mica.jpg"%>
+          </a>
+        </div>
+      </div>
+      <div class="bt96d2-2 cNrxHZ col-md-8 pt-2 pb-3">
+        <h4 class="bt96d2-6 bGYjCP">
+          <span id="apropos">À propos</span>
+        </h4>
+        <div class="mt-2 bt96d2-7">
+          <p class="bt96d2-8 ghoRQb text-ligth text-justify">
+            <span>
+              La Plateforme Multi-Bailleurs pour le Secteur Privé, la Finance et l’Industrie Extractive est chargée,
+              à un niveau technique, de la coordination des projets relatifs au développement du secteur privé, de la finance et de l’industrie extractive. La Plateforme veille également à la mise en œuvre des principes de l’efficacité de 
+              l’aide dans les secteurs concernés... <a href="/apropos" >Voir plus</a>
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<section>
+  <div class="bg-white">
+    <div class="d-flex align-items-center mb-4">
+      <%Ptf.all.order(:title).each do |p|%>
+        <a href="https://<%= p.lien.remove('https://')%>" class="mx-2" target="_blank"><img src="<%= p.image_url%>" class="image-c<%=p.id%>" alt=""></a>
+      <%end%>
+    </div>
+  </div>
+</section> 

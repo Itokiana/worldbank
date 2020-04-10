@@ -1,0 +1,347 @@
+<header class="aci59a-0 eyAIuG sticky-limit">
+    <div class="sc-1gnwgfb-2 hVIPFV">
+      
+    </div>
+</header>
+<div class="mt-4 mb-4">
+	<%= form_tag url_for(action: 'update'),method:'put', class:'form', multipart: true do%>
+		<div class="container">
+			<div class="row mb-2">
+				<div class="col-6">
+					<div>
+						<label for="nom" class="mr-2 table">Nom du projet </label>
+					</div>
+					<input type="text" name="nom_du_projet" id="nom"  value="<%= @projet.nom_du_projet%>" class="form-control">
+				</div>
+			</div>
+		</div>
+		<div class="container mb-2">
+			<a class="table">
+				Objectif général du projet
+			</a>
+			<div class="mt-2">
+				<div class="card card-body">
+					<textarea name="objectif_generale_du_projet" rows="10" id="comment_body" class="form-control p-2" onkeyup="checkWordLen(this);" required><%= raw @projet.objectif_generale_du_projet%></textarea>
+					<span id="charlimit"><strong class="words-left">150 mots maximum</strong></span>
+				</div>
+			</div>
+		</div>
+		<div class="container mb-2">
+			<a class="table">
+				Appui spécifique au secteur privé
+			</a>
+			<div class="mt-2">
+				<div class="card card-body">
+					<textarea name="aspsp" rows="10" required id="aspsp" class="form-control p-2"><%= raw @projet.aspsp%></textarea>
+				</div>
+			</div>
+		</div>
+
+
+			<div class="container">
+				<div class=" row mb-2">
+					<div class="col-6">
+						<h6 class="table">Partenaire Technique Financier</h6>
+						<select name="ptf" class="form-control">
+							<%Ptf.all.each do |p|%>
+								<%if p == @projet.ptf%>
+									<option value="<%= @projet.ptf.id%>" selected><%= @projet.ptf.title%></option>
+								<%else%>
+									<option value="<%= p.id%>"><%= p.title%></option>
+								<%end%>
+							<%end%>
+						</select>
+					</div>
+					<div class="col-6">
+						<h6 class="table">Nature de l'appui</h6>
+						<select name="appui" class="form-control">
+							<%Appui.all.each do |a|%>
+								<%if a == @projet.appui%>
+									<option value="<%= @projet.appui.id%>" selected><%= @projet.appui.title%></option>
+								<%else%>
+									<option value="<%= a.id%>"><%= a.title%></option>
+								<%end%>
+							<%end%>
+						</select>
+						
+					</div>
+						
+				</div>
+			</div>
+
+		<div class="container mb-2">
+			<a class="table">
+				Secteurs
+			</a>
+				<div class="mt-2">
+				<div class="card card-body">
+					<div class="row">
+						<% Secteur.all.order(:title).each_with_index do |c,x| %>
+								<div class="col-md-4">
+									<% if @sects %> 
+							 			<% if @sects.include? c %>
+
+											<%= check_box_tag("secteur_#{c.id}", c.id,true, id: :"s#{c.id}",:onclick => "check(#{c.id})") %>
+										<%else%>
+											<%= check_box_tag("secteur_#{c.id}", c.id,false, id: :"s#{c.id}",:onclick => "check(#{c.id})") %>
+										<%end%>
+									<%= c.title%>
+									<%end%>
+								</div> 
+							<% end %>
+					</div>
+				</div>
+				</div>
+		</div>
+		<div class="container">
+			<div class="d-flex justify-content-between mb-3">
+				<div class="col-md-4 pl-0">
+					<h6 class="table">Montant pour le secteur :</h6>
+					<% Secteur.all.each do |s|%>
+							<% if @sects %> 
+						 		<% if @sects.include? s %>
+									<div class="form-control pr-0" id="montant<%=s.id%>" style="display: block;">
+										<input type="text" name="montant<%= s.id%>" placeholder="<%= s.title%>" value="<%= s.montants.find_by(projet_id: @projet.id).price%>" class="border-0">
+										<select name="unite_id<%= s.id%>" class="text-center border-left unit pl-2 btn-reset">
+											<% Unite.all.each do |u|%>
+												<%if u == s.montants.find_by(projet_id: @projet.id).unite %>
+													<option value="<%= s.montants.find_by(projet_id: @projet.id).unite.id%>" selected><%= u.nom%></option>
+												<%else%>
+													<option value="<%= u.id%>"><%= u.nom%></option>
+												<%end%>
+											<%end%>
+										</select>
+									</div>
+								<%else%>
+									<div class="form-control pr-0" id="montant<%=s.id%>" style="display: none;">
+										<input type="text" name="montant<%= s.id%>" placeholder="<%= s.title%>" class="border-0">
+										<%= select_tag "unite_id#{s.id}", options_for_select(Unite.all.order(:nom).collect{ |c| [c.nom, c.id] }), :include_blank => "choisir", class: "text-center border-left unit pl-2 btn-reset"%>
+									</div>
+								<%end%>
+							<%end%>
+
+						<%end%>
+				</div>
+				<div class="col-md-4">
+					<h6 class="table">Début</h6>
+					<input type="text" id="selectionDebut" placeholder="mm/aaaa" class="form-control" required="true" value="<%= @projet.debut_du_projet.year%>">
+					<input type="hidden" id="selectionDebutValue" placeholder="mm/aaaa" class="form-control" required="true" name="debut_du_projet" value="<%= @projet.debut_du_projet%>">
+				</div>
+				<div class="col-md-4 pr-0">			
+					<h6 class="table">Fin</h6>
+					<input type="text" class="form-control" placeholder="mm/aaaa" required="true" id="selectionFin" value="<%= @projet.fin.year%>">
+					<input type="hidden" name="fin" id="selectionFinValue" class="form-control" placeholder="mm/aaaa" required="true" name="fin" value="<%= @projet.fin%>">
+				</div>
+			</div>
+		</div>
+
+
+			<div class="container mb-2 mt-2">
+				<a class="table">
+					Filières
+				</a>
+				<div class="mt-2">
+					<div class="card card-body">
+						<div class="row">
+							<% filis = @fils %>
+							<%Secteur.all.each do |s|%>
+								<%@fil_ex = false%>
+								<%s.secteur_filieres.each do |sf|%>
+
+									<% if filis%>
+										<% if filis.include? sf.filiere%>
+											<%@fil_ex = true%>
+										<%end%>
+									<%end%>
+								<%end%>
+								<%s.secteur_filieres.each do |sf|%>
+									<%if @fil_ex == true%>
+										<% if filis%>
+										<% if filis.include? sf.filiere%>
+											<div class="col-md-4" style="display: block" id="fil<%= sf.filiere.id%>">
+												<%= check_box_tag("filiere_ids[]", sf.filiere.id,true, id: :"idfil#{sf.id}")%>
+												<%= sf.filiere.title%>
+											</div>
+										<% filis.delete(sf.filiere) %>
+										<%else%>
+											<div class="col-md-4" style="display: block" id="fil<%= sf.filiere.id%>">
+												<%= check_box_tag("filiere_ids[]", sf.filiere.id,false,id: :"idfil#{sf.id}")%>
+												<%= sf.filiere.title%>
+											</div>
+										<% end %>
+										<% end %>
+									<%else%>
+										<% if filis%>
+										<% if filis.include? sf.filiere%>
+											<div class="col-md-6" style="display: block" id="fil<%= sf.filiere.id%>">
+												<%= check_box_tag("filiere_ids[]", sf.filiere.id,true, id: :"idfil#{sf.id}")%>
+												<%= sf.filiere.title%>
+											</div>
+										<%else%>
+											<div class="col-md-6" style="display: none" id="fil<%= sf.filiere.id%>">
+												<%= check_box_tag("filiere_ids[]", sf.filiere.id,false,id: :"idfil#{sf.id}")%>
+												<%= sf.filiere.title%>
+											</div>
+										<% end %>
+										<% end %>
+									<%end%>
+									<div class="col-md-4" style="display: none" id="fl<%= sf.filiere.id%>">
+										<%= check_box_tag("filiere_ids[]", sf.filiere.id,false,id: :"idfil#{sf.id}")%>
+										<%= sf.filiere.title%>
+									</div>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="container mb-2 mt-2">
+				<a class="table">
+					Formes d'appui
+				</a>
+				<div class="mt-2">
+					<div class="card card-body">
+						<div class="row">
+							<% foros = @forms %>
+							<%Secteur.all.each do |s|%>
+								<%@form_ex = false%>
+								<%s.formesecteurs.each do |fs|%>
+
+									<% if foros%>
+										<% if foros.include? fs.forme%>
+											<%@form_ex = true%>
+										<%end%>
+									<%end%>
+								<%end%>
+								<%s.formesecteurs.each do |fs|%>
+								<%if @form_ex == true%>
+									<% if foros%>
+									<% if foros.include? fs.forme%>
+										<div class="col-md-6" style="display: block" id="form<%= fs.forme.id%>">
+											<%= check_box_tag("forme_ids[]", fs.forme.id,true, id: :"idform#{fs.id}")%>
+											<%= fs.forme.title%>
+										</div>
+										<% foros.delete(fs.forme) %>
+									<%else%>
+										<div class="col-md-6" style="display: block" id="form<%= fs.forme.id%>">
+											<%= check_box_tag("forme_ids[]", fs.forme.id,false,id: :"idform#{fs.id}")%>
+											<%= fs.forme.title%>
+										</div>
+									<% end %>
+									<% end %>
+								<%else%>
+									<% if foros%>
+									<% if foros.include? fs.forme%>
+										<div class="col-md-6" style="display: block" id="form<%= fs.forme.id%>">
+											<%= check_box_tag("forme_ids[]", fs.forme.id,true, id: :"idform#{fs.id}")%>
+											<%= fs.forme.title%>
+										</div>
+									<%else%>
+										<div class="col-md-6" style="display: none" id="form<%= fs.forme.id%>">
+											<%= check_box_tag("forme_ids[]", fs.forme.id,false,id: :"idform#{fs.id}")%>
+											<%= fs.forme.title%>
+										</div>
+									<% end %>
+									<% end %>
+								<%end%>
+								
+									<div class="col-md-6" style="display: none" id="forme<%= fs.forme.id%>">
+										<%= check_box_tag("forme_ids[]", fs.forme.id,false,id: :"idform#{fs.id}")%>
+										<%= fs.forme.title%>
+									</div>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="container mb-2">
+				<a class="table">
+					Bénéficiaires
+				</a>
+				<div class="mt-2">
+					<div class="card card-body">
+						<div class="row">
+							<% Beneficiaire.all.order(:title).each_with_index do |c,x| %>
+								<div class="col-md-6">
+									<% if @bens%>
+							 			<% if @bens.include? c %>
+
+							   			<%= check_box_tag("beneficiaire_#{x}",c.id, checked: true) %>
+							   			<%else%>
+							 				<%= check_box_tag("beneficiaire_#{x}",c.id) %>
+							 			<%end%>
+							 		<%end%>
+							   		<%= c.title%> 
+								</div>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container mb-2">
+				<a class="table">
+					Institution Gouvernementale Associée
+				</a>
+				<div  class="mt-2">
+					<div class="card card-body">
+						<div class="row">
+							<% Iga.all.order(:title).each_with_index do |c,x| %>
+								<div class="col-md-12">
+									<% if @igas%>
+								 		<% if @igas.include? c %>
+											<%= check_box_tag("iga_#{x}",c.id, checked: true) %>
+
+								 		<%else%>
+								 			<%= check_box_tag("iga_#{x}",c.id) %>
+								 		<%end%>
+								 	<%end%>
+								 	<%= c.title%>
+								</div>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container mb-2">
+				<a class="table">
+					Régions
+				</a>
+				<div class="mt-2">
+					<div class="card card-body">
+						<div class="row">
+							<% Zone.all.order(:title).each_with_index do |c,x| %>
+								<div class="col-md-4">
+									<% if @zones%>
+								 		<% if @zones.include? c %>
+											<%= check_box_tag("zone_#{x}",c.id, checked: true) %>
+										<%else%>
+								 			<%= check_box_tag("zone_#{x}",c.id) %>
+								 		<%end%>
+								 	<%end%>
+								 	<%= c.title%>
+								</div>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container mt-4">
+				<%if @projet.validation == nil%>
+					<input type="submit" name="modifier" value="Enregistrer la modification" class="btn btn-secondary">
+					<input type="submit" name="modifier" value="Publier" class="sc-eerKOB cfnPHQ">
+				<%else%>
+					<input type="submit" name="modifier" value="Re-publier" class="sc-eerKOB cfnPHQ">
+				<%end%>
+				<a href="<%= admin_projet_path(@projet.id)%>" class="btn btn-secondary">Annuler la modification</a>
+			</div>		
+	<% end %>
+</div>
+<%= render partial: "/admin/projets/script.html.erb"%>
